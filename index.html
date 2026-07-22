@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Beck Systems — AI Automation, Lead Follow-Up &amp; Websites | Charlotte, NC</title>
+<meta name="description" content="Beck Systems builds AI receptionists, automated lead follow-up, and CRM pipelines for small businesses — plus a professional website, hosted and maintained, for $97/month. Charlotte, North Carolina." />
+
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ivory:  '#F7F5F0',
+          paper:  '#FCFBF8',
+          ink:    '#121212',
+          smoke:  '#6B6B66',
+          gold:   '#A98A44',
+          goldsoft: '#C9B37E',
+        },
+        fontFamily: {
+          serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+          sans:  ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        letterSpacing: { widest2: '0.22em' },
+      }
+    }
+  }
+</script>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { background:#F7F5F0; color:#121212; -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+  ::selection { background:#A98A44; color:#F7F5F0; }
+
+  /* --- grain overlay --- */
+  .grain::before{
+    content:""; position:fixed; inset:-100%; z-index:60; pointer-events:none; opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain 8s steps(10) infinite;
+  }
+  @keyframes grain{
+    0%,100%{transform:translate(0,0)} 10%{transform:translate(-3%,-5%)} 20%{transform:translate(-8%,3%)}
+    30%{transform:translate(4%,-7%)} 40%{transform:translate(-3%,8%)} 50%{transform:translate(-8%,3%)}
+    60%{transform:translate(6%,0)} 70%{transform:translate(0,6%)} 80%{transform:translate(-6%,0)} 90%{transform:translate(3%,4%)}
+  }
+
+  /* --- hero line mask reveal --- */
+  .line-mask{ overflow:hidden; display:block; }
+  .line-mask > span{ display:block; transform:translateY(110%); }
+
+  /* --- marquee --- */
+  .marquee-track{ display:flex; width:max-content; animation:marquee 28s linear infinite; }
+  @keyframes marquee{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* --- gold underline link hover --- */
+  .navlink{ position:relative; }
+  .navlink::after{
+    content:""; position:absolute; left:0; bottom:-4px; height:1px; width:100%;
+    background:#A98A44; transform:scaleX(0); transform-origin:right; transition:transform .45s cubic-bezier(.77,0,.18,1);
+  }
+  .navlink:hover::after{ transform:scaleX(1); transform-origin:left; }
+
+  /* --- CTA buttons --- */
+  .btn-primary{
+    position:relative; overflow:hidden; isolation:isolate;
+    transition:color .4s cubic-bezier(.77,0,.18,1), transform .3s ease;
+  }
+  .btn-primary::before{
+    content:""; position:absolute; inset:0; z-index:-1; background:#A98A44;
+    transform:translateY(101%); transition:transform .45s cubic-bezier(.77,0,.18,1);
+  }
+  .btn-primary:hover::before{ transform:translateY(0); }
+  .btn-primary:hover{ color:#121212; }
+  .btn-ghost{ transition:background .4s ease, color .4s ease, border-color .4s ease; }
+  .btn-ghost:hover{ background:#121212; color:#F7F5F0; border-color:#121212; }
+
+  /* --- service card hover lift --- */
+  .card-lift{ transition:transform .5s cubic-bezier(.22,1,.36,1), box-shadow .5s ease; }
+  .card-lift:hover{ transform:translateY(-8px); box-shadow:0 30px 60px -20px rgba(18,18,18,.15); }
+
+  /* --- floating orbs --- */
+  .orb{ position:absolute; border-radius:9999px; filter:blur(80px); pointer-events:none; }
+
+  /* --- ring logo spin on hover --- */
+  .logo-rings{ transition:transform .8s cubic-bezier(.22,1,.36,1); }
+  a:hover .logo-rings{ transform:rotate(180deg); }
+
+  /* --- form fields --- */
+  .field{
+    background:transparent; border:0; border-bottom:1px solid rgba(18,18,18,.25);
+    padding:1rem 0; width:100%; outline:none; transition:border-color .3s ease;
+  }
+  .field:focus{ border-color:#A98A44; }
+  .field::placeholder{ color:#9a988f; }
+
+  /* --- custom cursor --- */
+  #cursor{
+    position:fixed; top:0; left:0; z-index:70; width:12px; height:12px; border-radius:9999px;
+    background:#A98A44; pointer-events:none; mix-blend-mode:multiply;
+    transform:translate(-50%,-50%); transition:width .3s ease,height .3s ease,opacity .3s ease; opacity:0;
+  }
+  @media (hover:hover) and (pointer:fine){ #cursor{opacity:.9} }
+  #cursor.grow{ width:56px; height:56px; opacity:.35; }
+
+  /* --- reveal defaults (JS sets initial state; this guards no-JS) --- */
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+    .line-mask > span{ transform:none !important; }
+  }
+</style>
+</head>
+
+<body class="grain font-sans antialiased">
+<div id="cursor"></div>
+
+<!-- ============ NAV ============ -->
+<header id="nav" class="fixed top-0 inset-x-0 z-50 transition-all duration-500">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <nav class="flex items-center justify-between py-5">
+      <a href="#top" class="flex items-center gap-3 group">
+        <!-- interlocking rings logo -->
+        <svg class="logo-rings h-8 w-11" viewBox="0 0 44 32" fill="none" aria-hidden="true">
+          <circle cx="15" cy="16" r="11" stroke="#121212" stroke-width="3.2"/>
+          <circle cx="28" cy="16" r="11" stroke="#A98A44" stroke-width="3.2"/>
+        </svg>
+        <span class="font-serif text-lg md:text-xl tracking-widest2 uppercase">Beck&nbsp;Systems</span>
+      </a>
+
+      <div class="hidden md:flex items-center gap-9 text-[13px] uppercase tracking-widest2 text-ink/70">
+        <a href="#features" class="navlink hover:text-ink">Features</a>
+        <a href="#about" class="navlink hover:text-ink">About</a>
+        <a href="#services" class="navlink hover:text-ink">Services</a>
+        <a href="#contact" class="navlink hover:text-ink">Contact</a>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a href="#contact" class="btn-primary hidden sm:inline-block rounded-full border border-ink bg-ink px-6 py-2.5 text-[13px] uppercase tracking-widest2 text-ivory">
+          Book a Call
+        </a>
+        <!-- mobile burger -->
+        <button id="burger" class="md:hidden relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-[7px]" aria-label="Menu" aria-expanded="false">
+          <span class="burger-line block h-[2px] w-7 bg-ink transition-all duration-300"></span>
+          <span class="burger-line block h-[2px] w-7 bg-ink transition-all duration-300"></span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- mobile menu -->
+  <div id="mobileMenu" class="fixed inset-0 z-40 hidden bg-ivory md:hidden">
+    <div class="flex h-full flex-col items-center justify-center gap-8">
+      <a href="#features" class="mobile-link font-serif text-4xl">Features</a>
+      <a href="#about" class="mobile-link font-serif text-4xl">About</a>
+      <a href="#services" class="mobile-link font-serif text-4xl">Services</a>
+      <a href="#contact" class="mobile-link font-serif text-4xl">Contact</a>
+      <a href="#contact" class="mobile-link mt-6 rounded-full bg-ink px-8 py-3 text-sm uppercase tracking-widest2 text-ivory">Book a Call</a>
+      <p class="mt-10 text-xs uppercase tracking-widest2 text-smoke">Charlotte, North Carolina</p>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="relative flex min-h-screen items-center overflow-hidden pt-28 pb-16">
+  <div class="orb left-[-10%] top-[10%] h-[420px] w-[420px] bg-gold/20" data-orb></div>
+  <div class="orb right-[-12%] bottom-[5%] h-[520px] w-[520px] bg-goldsoft/25" data-orb></div>
+
+  <div class="relative mx-auto max-w-7xl px-6 lg:px-10 w-full">
+    <p class="hero-kicker mb-8 text-[12px] md:text-[13px] uppercase tracking-widest2 text-gold">
+      AI Automation Studio — Charlotte, NC
+    </p>
+
+    <h1 class="font-serif font-medium leading-[1.02] text-[13vw] sm:text-[9vw] lg:text-[6.5rem] xl:text-[7.5rem]">
+      <span class="line-mask"><span>Your leads get a reply</span></span>
+      <span class="line-mask"><span>in seconds — <em class="text-gold not-italic font-serif italic">not days.</em></span></span>
+    </h1>
+
+    <div class="mt-10 grid gap-10 lg:mt-14 lg:grid-cols-12 lg:items-end">
+      <p class="hero-sub max-w-xl text-lg leading-relaxed text-smoke lg:col-span-6">
+        Beck Systems builds AI receptionists, automated follow-up, and CRM pipelines
+        that answer every call, chase every lead, and book the appointment —
+        while you run the business.
+      </p>
+      <div class="hero-ctas flex flex-wrap items-center gap-4 lg:col-span-6 lg:justify-end">
+        <a href="#contact" data-magnetic class="btn-primary rounded-full bg-ink px-9 py-4 text-[13px] uppercase tracking-widest2 text-ivory">
+          Book a Consultation
+        </a>
+        <a href="#services" data-magnetic class="btn-ghost rounded-full border border-ink/30 px-9 py-4 text-[13px] uppercase tracking-widest2 text-ink">
+          Explore Services
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- scroll hint -->
+  <div class="hero-hint absolute bottom-8 left-1/2 -translate-x-1/2 text-[11px] uppercase tracking-widest2 text-smoke">
+    Scroll
+    <span class="mx-auto mt-2 block h-10 w-[1px] overflow-hidden bg-ink/10">
+      <span class="block h-full w-full origin-top animate-[scrollhint_1.8s_ease-in-out_infinite] bg-gold"></span>
+    </span>
+  </div>
+  <style>@keyframes scrollhint{0%{transform:scaleY(0);transform-origin:top}45%{transform:scaleY(1);transform-origin:top}55%{transform:scaleY(1);transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}</style>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<section class="border-y border-ink/10 bg-paper py-5 overflow-hidden" aria-hidden="true">
+  <div class="marquee-track gap-0 whitespace-nowrap">
+    <div class="flex items-center">
+      <span class="marquee-set flex items-center text-[13px] uppercase tracking-widest2 text-ink/60"></span>
+      <span class="marquee-set flex items-center text-[13px] uppercase tracking-widest2 text-ink/60"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section id="features" class="relative py-24 md:py-36">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <div class="mb-16 md:mb-24 md:flex md:items-end md:justify-between" data-reveal>
+      <div>
+        <p class="mb-4 text-[12px] uppercase tracking-widest2 text-gold">What we build</p>
+        <h2 class="font-serif text-5xl md:text-6xl font-medium leading-tight">
+          Systems that run<br class="hidden md:block"/> the busywork.
+        </h2>
+      </div>
+      <p class="mt-6 max-w-sm text-smoke md:mt-0">
+        Every missed call is a missed customer. We wire your front office so nothing —
+        and no one — slips through.
+      </p>
+    </div>
+
+    <div class="grid gap-px overflow-hidden rounded-2xl border border-ink/10 bg-ink/10 md:grid-cols-3">
+      <!-- feature card -->
+      <article class="feature-card group bg-ivory p-10 md:p-12">
+        <div class="mb-8 flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 text-gold transition-transform duration-500 group-hover:rotate-[360deg]">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5a2 2 0 012-2h2l2 5-2.5 1.5a11 11 0 005 5L13 12l5 2v2a2 2 0 01-2 2A15 15 0 013 5z"/></svg>
+        </div>
+        <h3 class="font-serif text-3xl font-medium">AI Receptionist</h3>
+        <p class="mt-4 leading-relaxed text-smoke">
+          Answers every call, texts back missed ones, and books appointments straight
+          onto your calendar — nights, weekends, holidays. 24/7, without the payroll.
+        </p>
+      </article>
+
+      <article class="feature-card group bg-ivory p-10 md:p-12">
+        <div class="mb-8 flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 text-gold transition-transform duration-500 group-hover:rotate-[360deg]">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 5l7 7-7 7M4 12h16"/></svg>
+        </div>
+        <h3 class="font-serif text-3xl font-medium">Automated Follow-Up</h3>
+        <p class="mt-4 leading-relaxed text-smoke">
+          Speed-to-lead in seconds. Every enquiry gets an instant, personal reply and a
+          polite nudge sequence until they book or say no. No lead slips through.
+        </p>
+      </article>
+
+      <article class="feature-card group bg-ivory p-10 md:p-12">
+        <div class="mb-8 flex h-12 w-12 items-center justify-center rounded-full border border-gold/40 text-gold transition-transform duration-500 group-hover:rotate-[360deg]">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h10"/><circle cx="19" cy="18" r="2"/></svg>
+        </div>
+        <h3 class="font-serif text-3xl font-medium">CRM Pipeline Optimization</h3>
+        <p class="mt-4 leading-relaxed text-smoke">
+          Your data updates itself in real time. Clean stages, automatic tagging, and
+          custom logic built around how you actually work — with the tools you already use.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STATS ============ -->
+<section class="border-y border-ink/10 bg-paper py-20 md:py-28">
+  <div class="mx-auto grid max-w-7xl grid-cols-2 gap-y-14 px-6 md:grid-cols-4 lg:px-10">
+    <div class="stat text-center" data-reveal>
+      <p class="font-serif text-6xl md:text-7xl font-medium">24/7</p>
+      <p class="mt-3 text-[12px] uppercase tracking-widest2 text-smoke">Calls Answered</p>
+    </div>
+    <div class="stat text-center" data-reveal>
+      <p class="font-serif text-6xl md:text-7xl font-medium"><span class="counter" data-target="99.9" data-decimals="1">0</span><span class="text-gold text-3xl align-super">%</span></p>
+      <p class="mt-3 text-[12px] uppercase tracking-widest2 text-smoke">Hosting Uptime</p>
+    </div>
+    <div class="stat text-center" data-reveal>
+      <p class="font-serif text-6xl md:text-7xl font-medium"><span class="counter" data-target="5">0</span></p>
+      <p class="mt-3 text-[12px] uppercase tracking-widest2 text-smoke">Updates a Month</p>
+    </div>
+    <div class="stat text-center" data-reveal>
+      <p class="font-serif text-6xl md:text-7xl font-medium"><span class="text-gold text-4xl align-super">$</span><span class="counter" data-target="97">0</span></p>
+      <p class="mt-3 text-[12px] uppercase tracking-widest2 text-smoke">Monthly, All-In</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="relative overflow-hidden py-28 md:py-44">
+  <div class="orb left-[30%] top-[20%] h-[380px] w-[380px] bg-gold/15" data-orb></div>
+  <div class="relative mx-auto max-w-5xl px-6 text-center lg:px-10">
+    <h2 class="about-line font-serif text-[11vw] leading-[1.05] font-medium sm:text-6xl md:text-7xl">
+      We handle the tech.
+    </h2>
+    <h2 class="about-line font-serif text-[11vw] leading-[1.05] font-medium italic text-gold sm:text-6xl md:text-7xl">
+      You run the business.
+    </h2>
+    <p class="mx-auto mt-10 max-w-2xl text-lg leading-relaxed text-smoke" data-reveal>
+      Beck Systems is an automation studio in Charlotte, North Carolina. We build AI
+      receptionists, automation, and websites for local businesses — bespoke systems,
+      direct support, and a partner who picks up the phone. No ticket queues. No agencies-of-agencies.
+      Just tech that quietly earns its keep.
+    </p>
+    <p class="mt-8 text-[12px] uppercase tracking-widest2 text-smoke" data-reveal>
+      Beck Systems — Charlotte, North Carolina
+    </p>
+  </div>
+</section>
+
+<!-- ============ SERVICES / PRICING ============ -->
+<section id="services" class="relative border-t border-ink/10 bg-paper py-24 md:py-36">
+  <div class="mx-auto max-w-7xl px-6 lg:px-10">
+    <div class="mb-16 md:mb-24 text-center" data-reveal>
+      <p class="mb-4 text-[12px] uppercase tracking-widest2 text-gold">Services</p>
+      <h2 class="font-serif text-5xl md:text-6xl font-medium">Two ways to work with us.</h2>
+      <p class="mx-auto mt-5 max-w-xl text-smoke">
+        Start with a website that's fully cared for — then let automation take the busywork off your plate.
+      </p>
+    </div>
+
+    <div class="grid gap-8 lg:grid-cols-2">
+      <!-- Website & Maintenance -->
+      <article class="card-lift relative rounded-2xl border border-gold/50 bg-ivory p-10 md:p-14" data-reveal>
+        <span class="absolute -top-3.5 right-8 rounded-full bg-gold px-4 py-1.5 text-[11px] uppercase tracking-widest2 text-ivory">Most Popular</span>
+        <p class="text-[12px] uppercase tracking-widest2 text-smoke">Monthly</p>
+        <h3 class="mt-3 font-serif text-4xl md:text-5xl font-medium">Website &amp; Maintenance</h3>
+        <p class="mt-4 text-smoke">A professional website, fully hosted and cared for.</p>
+
+        <ul class="mt-8 divide-y divide-ink/10 text-[15px]">
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>Clean, professional design</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>Fully responsive on every device</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>SEO-ready structure</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>Custom domain included</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>Hosting with 99.9% uptime</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>SSL certificate included</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>Backups &amp; monitoring, handled</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>5 update requests a month</li>
+        </ul>
+
+        <div class="mt-10 flex flex-wrap items-center justify-between gap-6">
+          <p class="font-serif text-3xl"><span class="text-gold">$</span>97 <span class="text-base uppercase tracking-widest2 text-smoke">/ month</span></p>
+          <a href="#contact" data-magnetic class="btn-primary rounded-full bg-ink px-8 py-3.5 text-[13px] uppercase tracking-widest2 text-ivory">Get Started</a>
+        </div>
+      </article>
+
+      <!-- AI Automation -->
+      <article class="card-lift relative rounded-2xl border border-ink/10 bg-ink p-10 text-ivory md:p-14" data-reveal>
+        <p class="text-[12px] uppercase tracking-widest2 text-ivory/50">Custom</p>
+        <h3 class="mt-3 font-serif text-4xl md:text-5xl font-medium">AI Automation</h3>
+        <p class="mt-4 text-ivory/60">Systems that run the busywork so you don't have to.</p>
+
+        <ul class="mt-8 divide-y divide-ivory/10 text-[15px] text-ivory/85">
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>AI Receptionist — answers calls &amp; books appointments, 24/7</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>Automated follow-up — no lead slips through</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>CRM sync — your data updates in real time</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>Custom logic, built around how you actually work</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>Works with the tools you already use</li>
+          <li class="flex items-center gap-3 py-3.5"><span class="h-1.5 w-1.5 rounded-full bg-gold"></span>Direct support, not a ticket queue</li>
+        </ul>
+
+        <div class="mt-10 flex flex-wrap items-center justify-between gap-6">
+          <p class="font-serif text-3xl">Custom <span class="text-base uppercase tracking-widest2 text-ivory/50">/ quote</span></p>
+          <a href="#contact" data-magnetic class="rounded-full border border-gold bg-gold px-8 py-3.5 text-[13px] uppercase tracking-widest2 text-ink transition hover:bg-transparent hover:text-gold">Book a Call</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="relative overflow-hidden py-24 md:py-36">
+  <div class="orb right-[-8%] top-[15%] h-[420px] w-[420px] bg-goldsoft/20" data-orb></div>
+  <div class="relative mx-auto grid max-w-7xl gap-16 px-6 lg:grid-cols-2 lg:px-10">
+    <div data-reveal>
+      <p class="mb-4 text-[12px] uppercase tracking-widest2 text-gold">Contact</p>
+      <h2 class="font-serif text-5xl md:text-6xl font-medium leading-tight">Let's put your<br/>follow-up on <em class="italic text-gold">autopilot.</em></h2>
+      <p class="mt-6 max-w-md text-smoke leading-relaxed">
+        Tell us about your business and we'll come back within one business day with
+        honest advice — and a plan if you want one. Systems run 24/7. We answer Mon–Fri, 9–5 ET.
+      </p>
+
+      <div class="mt-10 space-y-4 text-[15px]">
+        <a href="tel:+17042542341" class="group flex items-center gap-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full border border-ink/15 text-gold transition group-hover:border-gold"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 5a2 2 0 012-2h2l2 5-2.5 1.5a11 11 0 005 5L13 12l5 2v2a2 2 0 01-2 2A15 15 0 013 5z"/></svg></span>
+          (704) 254-2341
+        </a>
+        <a href="mailto:BeckSystems@Gmail.com" class="group flex items-center gap-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full border border-ink/15 text-gold transition group-hover:border-gold"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span>
+          BeckSystems@Gmail.com
+        </a>
+        <a href="https://x.com/thebecksystems" target="_blank" rel="noopener" class="group flex items-center gap-4">
+          <span class="flex h-10 w-10 items-center justify-center rounded-full border border-ink/15 text-gold transition group-hover:border-gold"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-6.77 7.74L23.2 22h-6.24l-4.89-6.4L6.5 22H3.34l7.24-8.28L1.2 2h6.4l4.42 5.85L18.9 2zm-1.1 18.1h1.73L7.16 3.8H5.3l12.5 16.3z"/></svg></span>
+          @thebecksystems
+        </a>
+      </div>
+    </div>
+
+    <form id="contactForm" class="self-center" data-reveal novalidate>
+      <div class="space-y-8">
+        <div>
+          <label for="name" class="text-[12px] uppercase tracking-widest2 text-smoke">Name</label>
+          <input id="name" name="name" type="text" required placeholder="Jane Appleseed" class="field text-lg" />
+        </div>
+        <div>
+          <label for="email" class="text-[12px] uppercase tracking-widest2 text-smoke">Email</label>
+          <input id="email" name="email" type="email" required placeholder="jane@business.com" class="field text-lg" />
+        </div>
+        <div>
+          <label for="message" class="text-[12px] uppercase tracking-widest2 text-smoke">Message</label>
+          <textarea id="message" name="message" rows="4" required placeholder="Tell us about your business and what's slipping through the cracks…" class="field resize-none text-lg"></textarea>
+        </div>
+      </div>
+      <button type="submit" data-magnetic class="btn-primary mt-10 w-full rounded-full bg-ink px-9 py-4 text-[13px] uppercase tracking-widest2 text-ivory sm:w-auto">
+        Send Message
+      </button>
+      <p id="formNote" class="mt-4 hidden text-sm text-gold">Thank you — your email app is opening with your message. We'll reply within one business day.</p>
+    </form>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="bg-ink text-ivory">
+  <div class="mx-auto max-w-7xl px-6 py-20 lg:px-10">
+    <div class="grid gap-14 md:grid-cols-12">
+      <div class="md:col-span-5" data-reveal>
+        <a href="#top" class="flex items-center gap-3">
+          <svg class="logo-rings h-8 w-11" viewBox="0 0 44 32" fill="none" aria-hidden="true">
+            <circle cx="15" cy="16" r="11" stroke="#F7F5F0" stroke-width="3.2"/>
+            <circle cx="28" cy="16" r="11" stroke="#A98A44" stroke-width="3.2"/>
+          </svg>
+          <span class="font-serif text-lg tracking-widest2 uppercase">Beck&nbsp;Systems</span>
+        </a>
+        <p class="mt-8 max-w-sm font-serif text-2xl leading-relaxed text-ivory/80">
+          AI receptionists, automation, and websites for local businesses in Charlotte and beyond.
+        </p>
+      </div>
+
+      <div class="md:col-span-3" data-reveal>
+        <p class="text-[12px] uppercase tracking-widest2 text-ivory/40">Menu</p>
+        <ul class="mt-6 space-y-3.5 text-ivory/80">
+          <li><a href="#top" class="navlink">Home</a></li>
+          <li><a href="#features" class="navlink">Features</a></li>
+          <li><a href="#services" class="navlink">Services</a></li>
+          <li><a href="#contact" class="navlink">Contact</a></li>
+          <li><a href="#contact" class="navlink">Book a call</a></li>
+        </ul>
+      </div>
+
+      <div class="md:col-span-4" data-reveal>
+        <p class="text-[12px] uppercase tracking-widest2 text-ivory/40">Contact</p>
+        <ul class="mt-6 space-y-3.5 text-ivory/80">
+          <li><a href="mailto:BeckSystems@Gmail.com" class="navlink">BeckSystems@Gmail.com</a></li>
+          <li><a href="tel:+17042542341" class="navlink">(704) 254-2341</a></li>
+          <li><a href="https://x.com/thebecksystems" target="_blank" rel="noopener" class="navlink">@thebecksystems</a></li>
+        </ul>
+        <p class="mt-10 text-[12px] uppercase tracking-widest2 text-ivory/40">Studio</p>
+        <ul class="mt-6 space-y-2 text-ivory/60 text-sm">
+          <li>Charlotte, North Carolina</li>
+          <li>Mon–Fri, 9–5 ET</li>
+          <li>Systems run 24/7</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-16 flex flex-col items-start justify-between gap-4 border-t border-ivory/10 pt-8 text-sm text-ivory/40 sm:flex-row sm:items-center">
+      <p>© <span id="year">2026</span> Beck Systems. All rights reserved.</p>
+      <div class="flex items-center gap-8">
+        <a href="#" class="navlink hover:text-ivory/70">Privacy Policy</a>
+        <a href="https://x.com/thebecksystems" target="_blank" rel="noopener" class="navlink hover:text-ivory/70">X / Twitter</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  /* ---------- marquee content ---------- */
+  const marqueeItems = [
+    'AI Receptionist', 'Automated Lead Follow-Up', 'CRM Pipeline Optimization',
+    'Websites, Hosted & Maintained', '24/7 Calls Answered', '99.9% Uptime', 'Charlotte, NC'
+  ];
+  document.querySelectorAll('.marquee-set').forEach(set => {
+    set.innerHTML = marqueeItems.map(t =>
+      `<span class="px-6">${t}</span><span class="text-gold">✦</span>`
+    ).join('');
+  });
+
+  /* ---------- smooth anchor scrolling ---------- */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const target = document.querySelector(a.getAttribute('href'));
+      if (!target) return;
+      e.preventDefault();
+      closeMenu();
+      gsap.to(window, { duration: reduceMotion ? 0 : 1.1, scrollTo: { y: target, offsetY: 70 }, ease: 'power3.inOut' });
+    });
+  });
+
+  /* ---------- sticky nav: shrink + blur on scroll ---------- */
+  const nav = document.getElementById('nav');
+  const setNav = solid => {
+    nav.classList.toggle('backdrop-blur-md', solid);
+    nav.classList.toggle('bg-ivory/85', solid);
+    nav.classList.toggle('shadow-[0_1px_0_rgba(18,18,18,0.08)]', solid);
+  };
+  ScrollTrigger.create({ start: 60, onEnter: () => setNav(true), onLeaveBack: () => setNav(false) });
+
+  /* ---------- mobile menu ---------- */
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobileMenu');
+  const lines = burger.querySelectorAll('.burger-line');
+  let menuOpen = false;
+
+  function openMenu(){
+    menuOpen = true;
+    burger.setAttribute('aria-expanded', 'true');
+    menu.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    lines[0].style.transform = 'translateY(4.5px) rotate(45deg)';
+    lines[1].style.transform = 'translateY(-4.5px) rotate(-45deg)';
+    gsap.fromTo(menu, { opacity: 0 }, { opacity: 1, duration: .35, ease: 'power2.out' });
+    gsap.fromTo('.mobile-link', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: .5, stagger: .07, ease: 'power3.out', delay: .1 });
+  }
+  function closeMenu(){
+    if (!menuOpen) return;
+    menuOpen = false;
+    burger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+    lines[0].style.transform = '';
+    lines[1].style.transform = '';
+    gsap.to(menu, { opacity: 0, duration: .25, ease: 'power2.in', onComplete: () => menu.classList.add('hidden') });
+  }
+  burger.addEventListener('click', () => menuOpen ? closeMenu() : openMenu());
+
+  /* ---------- hero entrance ---------- */
+  if (!reduceMotion) {
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    tl.to('.line-mask > span', { y: 0, duration: 1.2, stagger: 0.15, delay: 0.2 })
+      .from('.hero-kicker', { y: 20, opacity: 0, duration: .8 }, '-=1')
+      .from('.hero-sub',    { y: 30, opacity: 0, duration: .9 }, '-=0.8')
+      .from('.hero-ctas',   { y: 30, opacity: 0, duration: .9 }, '-=0.7')
+      .from('.hero-hint',   { opacity: 0, duration: .8 }, '-=0.4')
+      .from('#nav',         { y: -30, opacity: 0, duration: .8 }, 0);
+  } else {
+    document.querySelectorAll('.line-mask > span').forEach(s => s.style.transform = 'none');
+  }
+
+  /* ---------- generic scroll reveals ---------- */
+  if (!reduceMotion) {
+    gsap.utils.toArray('[data-reveal]').forEach(el => {
+      gsap.from(el, {
+        y: 50, opacity: 0, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 85%' }
+      });
+    });
+
+    /* feature cards stagger */
+    gsap.from('.feature-card', {
+      y: 60, opacity: 0, duration: 1, stagger: .15, ease: 'power3.out',
+      scrollTrigger: { trigger: '#features', start: 'top 70%' }
+    });
+
+    /* about lines: slide in from opposite sides */
+    gsap.from('.about-line:first-of-type', {
+      x: -80, opacity: 0, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: { trigger: '#about', start: 'top 70%' }
+    });
+    gsap.from('.about-line:last-of-type', {
+      x: 80, opacity: 0, duration: 1.1, ease: 'power3.out',
+      scrollTrigger: { trigger: '#about', start: 'top 70%' }
+    });
+
+    /* floating orbs parallax */
+    gsap.utils.toArray('[data-orb]').forEach((orb, i) => {
+      gsap.to(orb, {
+        y: i % 2 ? 120 : -120, ease: 'none',
+        scrollTrigger: { trigger: orb.parentElement, start: 'top bottom', end: 'bottom top', scrub: 1.2 }
+      });
+    });
+  }
+
+  /* ---------- animated counters ---------- */
+  document.querySelectorAll('.counter').forEach(el => {
+    const target = parseFloat(el.dataset.target);
+    const decimals = parseInt(el.dataset.decimals || '0', 10);
+    if (reduceMotion) { el.textContent = target.toFixed(decimals); return; }
+    const obj = { val: 0 };
+    gsap.to(obj, {
+      val: target, duration: 2, ease: 'power2.out',
+      scrollTrigger: { trigger: el, start: 'top 88%' },
+      onUpdate: () => el.textContent = obj.val.toFixed(decimals)
+    });
+  });
+
+  /* ---------- magnetic buttons ---------- */
+  if (window.matchMedia('(hover:hover) and (pointer:fine)').matches && !reduceMotion) {
+    document.querySelectorAll('[data-magnetic]').forEach(btn => {
+      btn.addEventListener('mousemove', e => {
+        const r = btn.getBoundingClientRect();
+        gsap.to(btn, {
+          x: (e.clientX - r.left - r.width / 2) * 0.25,
+          y: (e.clientY - r.top - r.height / 2) * 0.25,
+          duration: .4, ease: 'power2.out'
+        });
+      });
+      btn.addEventListener('mouseleave', () => gsap.to(btn, { x: 0, y: 0, duration: .6, ease: 'elastic.out(1,0.4)' }));
+    });
+  }
+
+  /* ---------- custom cursor ---------- */
+  const cursor = document.getElementById('cursor');
+  if (window.matchMedia('(hover:hover) and (pointer:fine)').matches && !reduceMotion) {
+    window.addEventListener('mousemove', e => {
+      gsap.to(cursor, { x: e.clientX, y: e.clientY, duration: .25, ease: 'power2.out' });
+    });
+    document.querySelectorAll('a, button, input, textarea').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('grow'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('grow'));
+    });
+  } else {
+    cursor.style.display = 'none';
+  }
+
+  /* ---------- contact form ---------- */
+  const form = document.getElementById('contactForm');
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const name = form.name.value.trim();
+    const email = form.email.value.trim();
+    const message = form.message.value.trim();
+    const subject = encodeURIComponent(`Website enquiry from ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+    window.location.href = `mailto:BeckSystems@Gmail.com?subject=${subject}&body=${body}`;
+    document.getElementById('formNote').classList.remove('hidden');
+    if (!reduceMotion) gsap.from('#formNote', { y: 10, opacity: 0, duration: .5, ease: 'power2.out' });
+  });
+});
+</script>
+</body>
+</html>
