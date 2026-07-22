@@ -616,6 +616,133 @@ select.field{
 .footer__bar a:hover{ color:rgba(245,243,236,.8); }
 .footer__bar .u-line::after{ background:var(--gold-soft); }
 
+/* ============ LIQUID TITLES ============ */
+.liquid{ position:relative; }
+.liquid .ch{ display:inline-block; transition:transform .32s var(--ease-out); will-change:transform; }
+@media (hover:hover) and (pointer:fine){
+  .liquid::after{
+    content:""; position:absolute; inset:-14%; pointer-events:none; opacity:0;
+    transition:opacity .45s ease;
+    background:radial-gradient(150px circle at var(--mx,50%) var(--my,50%),
+      rgba(255,255,255,.55), rgba(201,179,126,.28) 42%, transparent 72%);
+    mix-blend-mode:soft-light;
+  }
+  .liquid:hover::after{ opacity:1; }
+}
+
+/* ============ GOLD GLEAM + SPARKLES ============ */
+.gleam{ color:var(--gold); position:relative; padding:.25em .15em; margin:-.25em -.15em; }
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .gleam{
+    background:linear-gradient(100deg,
+      var(--gold) 0%, #E9DCAE 22%, var(--gold) 45%, #D8C07C 68%, var(--gold) 100%);
+    background-size:220% 100%;
+    -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:gleam 5.5s linear infinite;
+    filter:drop-shadow(0 0 16px rgba(169,138,68,.34));
+  }
+}
+@keyframes gleam{ to{ background-position:-220% 0; } }
+.sp{
+  position:absolute; font-style:normal; color:var(--gold-soft); pointer-events:none;
+  font-size:.32em; line-height:1; opacity:0; z-index:1;
+  animation:twinkle 2.8s ease-in-out infinite;
+  -webkit-text-fill-color:var(--gold-soft); filter:none;
+}
+@keyframes twinkle{
+  0%,100%{ opacity:0; transform:scale(.35) rotate(0deg); }
+  50%{ opacity:.95; transform:scale(1) rotate(100deg); }
+}
+
+/* ============ CLOUD CHATBOT ============ */
+.cb-btn{
+  position:fixed; right:22px; bottom:22px; z-index:135;
+  width:76px; height:60px; border:0; background:none; cursor:pointer;
+  filter:drop-shadow(0 10px 22px rgba(22,21,17,.22));
+  transition:transform .35s var(--ease-out);
+}
+.cb-btn:hover{ transform:scale(1.08) rotate(-3deg); }
+@keyframes cbfloat{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-7px) } }
+.cb-btn > svg{ width:100%; height:100%; overflow:visible; animation:cbfloat 5s ease-in-out infinite; }
+.cb-btn .cb-eye{ animation:blink 4.6s infinite; transform-origin:center; }
+@keyframes blink{ 0%,94%,100%{ transform:scaleY(1) } 96%{ transform:scaleY(.1) } }
+.cb-hint{
+  position:absolute; right:84px; top:50%; transform:translateY(-50%);
+  background:var(--ink); color:var(--ivory); font-size:10px; letter-spacing:.2em;
+  text-transform:uppercase; padding:7px 13px; border-radius:999px; white-space:nowrap;
+  opacity:0; transition:opacity .35s ease, transform .35s var(--ease-out); pointer-events:none;
+}
+.cb-btn:hover .cb-hint{ opacity:1; transform:translateY(-50%) translateX(-4px); }
+
+.cb-panel{
+  position:fixed; right:22px; bottom:96px; z-index:136;
+  width:min(360px, calc(100vw - 28px));
+  background:var(--paper); border:1px solid var(--hairline); border-radius:24px;
+  box-shadow:0 40px 90px -24px rgba(22,21,17,.35), 0 6px 20px -8px rgba(22,21,17,.15);
+  overflow:hidden; display:flex; flex-direction:column;
+  opacity:0; visibility:hidden; transform:translateY(18px) scale(.96);
+  transform-origin:bottom right;
+  transition:opacity .35s ease, visibility .35s, transform .4s var(--ease-out);
+}
+.cb-panel.open{ opacity:1; visibility:visible; transform:none; }
+.cb-head{
+  display:flex; align-items:center; gap:12px; padding:16px 18px;
+  background:var(--ivory); border-bottom:1px solid var(--hairline);
+}
+.cb-head svg{ width:44px; height:36px; flex-shrink:0; }
+.cb-head b{ display:block; font-size:13.5px; font-weight:600; letter-spacing:.02em; }
+.cb-head span{ display:flex; align-items:center; gap:6px; font-size:11px; color:var(--smoke); }
+.cb-close{
+  margin-left:auto; width:32px; height:32px; border-radius:50%; color:var(--smoke);
+  display:flex; align-items:center; justify-content:center; transition:background .3s, color .3s;
+}
+.cb-close:hover{ background:rgba(22,21,17,.06); color:var(--ink); }
+
+.cb-feed{
+  padding:18px 16px; display:flex; flex-direction:column; gap:10px;
+  height:min(360px, 48vh); overflow-y:auto; scroll-behavior:smooth;
+}
+.cb-msg{
+  max-width:86%; padding:11px 15px; font-size:13.5px; line-height:1.55; border-radius:16px;
+  animation:cbmsg .4s var(--ease-out);
+}
+@keyframes cbmsg{ from{ opacity:0; transform:translateY(10px) scale(.98);} to{ opacity:1; transform:none;} }
+.cb-msg--bot{ align-self:flex-start; background:var(--ivory); border:1px solid var(--hairline); border-bottom-left-radius:6px; }
+.cb-msg--bot b{ font-weight:600; }
+.cb-msg--user{ align-self:flex-end; background:var(--ink); color:var(--ivory); border-bottom-right-radius:6px; }
+.cb-msg--typing{ color:var(--smoke); }
+.cb-msg--typing .typing{ display:inline-flex; }
+
+.cb-chips{ display:flex; flex-wrap:wrap; gap:8px; padding:0 16px 12px; }
+.cb-chip{
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft);
+  border:1px solid var(--hairline); border-radius:999px; padding:8px 14px;
+  transition:border-color .3s, color .3s, background .3s;
+}
+.cb-chip:hover{ border-color:var(--gold); color:var(--gold); background:rgba(169,138,68,.06); }
+
+.cb-inputrow{
+  display:flex; align-items:center; gap:10px; padding:12px 14px;
+  border-top:1px solid var(--hairline); background:var(--ivory);
+}
+.cb-input{
+  flex:1; border:0; outline:0; background:transparent;
+  font:300 14px/1.4 var(--sans); color:var(--ink); padding:8px 4px;
+}
+.cb-input::placeholder{ color:#A6A49A; }
+.cb-send{
+  width:38px; height:38px; border-radius:50%; background:var(--ink); color:var(--ivory);
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  transition:background .35s, transform .3s var(--ease-out);
+}
+.cb-send:hover{ background:var(--gold); transform:scale(1.08); }
+
+@media(max-width:560px){
+  .cb-btn{ right:14px; bottom:14px; width:66px; height:52px; }
+  .cb-panel{ right:14px; bottom:78px; }
+}
+
 /* ---------- custom cursor ---------- */
 .cursor{ display:none; }
 @media (hover:hover) and (pointer:fine){
@@ -660,7 +787,6 @@ select.field{
       <a class="nav__link u-line" href="#demo">Demo</a>
       <a class="nav__link u-line" href="#about">About</a>
       <a class="nav__link u-line" href="#services">Services</a>
-      <a class="nav__link u-line" href="#contact">Contact</a>
     </nav>
 
     <div class="nav__right">
@@ -678,7 +804,6 @@ select.field{
   <a class="mmenu__link" href="#demo">Demo</a>
   <a class="mmenu__link" href="#about">About</a>
   <a class="mmenu__link" href="#services">Services</a>
-  <a class="mmenu__link" href="#contact">Contact</a>
   <a class="mmenu__btn btn btn--solid" href="#contact" data-topic="Book a call">Book a Call</a>
   <p class="mmenu__loc">Charlotte, North Carolina</p>
 </div>
@@ -701,9 +826,9 @@ select.field{
   <div class="container hero__inner">
     <p class="label fade-item hero__kicker">AI Automation Studio — Charlotte, NC</p>
 
-    <h1 class="hero__title display">
+    <h1 class="hero__title display liquid">
       <span class="mask"><span>Your leads get a reply</span></span>
-      <span class="mask"><span>in seconds — <em class="gold">not days.</em></span></span>
+      <span class="mask"><span>in seconds — <em class="gold gleam">not days.</em></span></span>
     </h1>
 
     <div class="hero__grid">
@@ -747,7 +872,7 @@ select.field{
     <div class="features__head">
       <div class="reveal">
         <p class="label">What we build</p>
-        <h2 class="h2">Systems that run<br/>the busywork.</h2>
+        <h2 class="h2 liquid">Systems that run<br/>the busywork.</h2>
       </div>
       <p class="lede reveal" data-delay="1">
         Every missed call is a missed customer. We wire your front office so nothing —
@@ -817,7 +942,7 @@ select.field{
   <div class="container demo__grid">
     <div class="demo__copy reveal-l">
       <p class="label">Live Demo</p>
-      <h2 class="h2">Miss the call.<br/><em class="gold">Keep the customer.</em></h2>
+      <h2 class="h2 liquid">Miss the call.<br/><em class="gold gleam">Keep the customer.</em></h2>
       <p class="lede">
         This is what happens when a lead calls at 2:47 AM and nobody's awake to answer.
         Watch the AI receptionist turn a missed call into a booked job — in under a minute.
@@ -895,8 +1020,8 @@ select.field{
 <section class="about" id="about">
   <div class="orb orb--a" data-orb></div>
   <div class="container">
-    <h2 class="about__line reveal-l">We handle the tech.</h2>
-    <h2 class="about__line about__line--gold reveal-r">You run the business.</h2>
+    <h2 class="about__line liquid reveal-l">We handle the tech.</h2>
+    <h2 class="about__line about__line--gold gleam reveal-r">You run the business.</h2>
     <p class="lede reveal">
       Beck Systems is an automation studio in Charlotte, North Carolina. We build AI
       receptionists, automation, and websites for local businesses — bespoke systems,
@@ -912,7 +1037,7 @@ select.field{
   <div class="container">
     <div class="services__head reveal">
       <p class="label label--center">Services</p>
-      <h2 class="h2">Two ways to work with us.</h2>
+      <h2 class="h2 liquid">Two ways to work with us.</h2>
       <p class="lede">Start with a website that's fully cared for — then let automation take the busywork off your plate.</p>
     </div>
 
@@ -967,7 +1092,7 @@ select.field{
   <div class="container contact__grid">
     <div class="contact__info reveal">
       <p class="label">Contact</p>
-      <h2 class="h2">Let's put your<br/>follow-up on <em class="gold">autopilot.</em></h2>
+      <h2 class="h2 liquid">Let's put your<br/>follow-up on <em class="gold gleam">autopilot.</em></h2>
       <p class="lede">
         Book a call or send us a note — either way it lands straight in our inbox and
         we reply within one business day. Systems run 24/7. We answer Mon–Fri, 9–5 ET.
@@ -1085,6 +1210,54 @@ select.field{
     </div>
   </div>
 </footer>
+
+<!-- ================= CLOUD CHATBOT ================= -->
+<button class="cb-btn" id="cbBtn" aria-label="Chat with Cirrus, our AI assistant" aria-expanded="false">
+  <span class="cb-hint">Ask me anything</span>
+  <svg viewBox="0 0 120 90" fill="none" aria-hidden="true">
+    <ellipse cx="60" cy="58" rx="44" ry="26" fill="#FDFCF9"/>
+    <circle cx="38" cy="44" r="20" fill="#FDFCF9"/>
+    <circle cx="66" cy="36" r="24" fill="#FDFCF9"/>
+    <circle cx="90" cy="50" r="16" fill="#FDFCF9"/>
+    <path d="M18 62c-2-10 4-22 16-24M104 60c2-8-2-18-12-22" stroke="rgba(22,21,17,.08)" stroke-width="2" stroke-linecap="round"/>
+    <ellipse class="cb-eye" cx="48" cy="52" rx="3.4" ry="4.4" fill="#161511"/>
+    <ellipse class="cb-eye" cx="74" cy="52" rx="3.4" ry="4.4" fill="#161511"/>
+    <path d="M54 62c4 4 10 4 14 0" stroke="#161511" stroke-width="2.6" stroke-linecap="round"/>
+    <ellipse cx="38" cy="60" rx="5" ry="3" fill="#C9B37E" opacity=".55"/>
+    <ellipse cx="84" cy="60" rx="5" ry="3" fill="#C9B37E" opacity=".55"/>
+  </svg>
+</button>
+
+<div class="cb-panel" id="cbPanel" role="dialog" aria-label="Chat with Cirrus" aria-hidden="true">
+  <div class="cb-head">
+    <svg viewBox="0 0 120 90" fill="none" aria-hidden="true">
+      <ellipse cx="60" cy="58" rx="44" ry="26" fill="#FDFCF9" stroke="rgba(22,21,17,.1)"/>
+      <circle cx="38" cy="44" r="20" fill="#FDFCF9"/>
+      <circle cx="66" cy="36" r="24" fill="#FDFCF9"/>
+      <circle cx="90" cy="50" r="16" fill="#FDFCF9"/>
+      <ellipse cx="48" cy="52" rx="3.4" ry="4.4" fill="#161511"/>
+      <ellipse cx="74" cy="52" rx="3.4" ry="4.4" fill="#161511"/>
+      <path d="M54 62c4 4 10 4 14 0" stroke="#161511" stroke-width="2.6" stroke-linecap="round"/>
+      <ellipse cx="38" cy="60" rx="5" ry="3" fill="#C9B37E" opacity=".55"/>
+      <ellipse cx="84" cy="60" rx="5" ry="3" fill="#C9B37E" opacity=".55"/>
+    </svg>
+    <div>
+      <b>Cirrus</b>
+      <span><i class="phone__dot"></i>Beck Systems' little cloud</span>
+    </div>
+    <button class="cb-close" id="cbClose" aria-label="Close chat">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+  </div>
+  <div class="cb-feed" id="cbFeed"></div>
+  <div class="cb-chips" id="cbChips"></div>
+  <form class="cb-inputrow" id="cbForm">
+    <input class="cb-input" id="cbInput" type="text" placeholder="Ask about AI automation…" autocomplete="off" maxlength="300" />
+    <button class="cb-send" type="submit" aria-label="Send">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+    </button>
+  </form>
+</div>
 
 <!-- GSAP: progressive enhancement only — the site is fully styled and animated without it -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -1321,6 +1494,205 @@ document.addEventListener('DOMContentLoaded', function () {
       formNote.className = 'form__note show';
       mailtoFallback(data);
     });
+  });
+
+  /* ---------- LIQUID TITLES: glassy ripple following the cursor ---------- */
+  if (finePointer && !reduceMotion) {
+    document.querySelectorAll('.liquid').forEach(function (el) {
+      el.setAttribute('aria-label', el.textContent.replace(/\s+/g, ' ').trim());
+      (function split(node) {
+        Array.prototype.slice.call(node.childNodes).forEach(function (child) {
+          if (child.nodeType === 3) {
+            var frag = document.createDocumentFragment();
+            child.textContent.split('').forEach(function (chr) {
+              var s = document.createElement('span');
+              s.className = 'ch';
+              s.setAttribute('aria-hidden', 'true');
+              s.textContent = chr;
+              if (chr === ' ') s.style.whiteSpace = 'pre';
+              frag.appendChild(s);
+            });
+            node.replaceChild(frag, child);
+          } else if (child.nodeType === 1 && child.tagName !== 'BR' && !child.classList.contains('gleam')) {
+            split(child);
+          }
+        });
+      })(el);
+
+      var chars = null, rect = null, raf = null, pending = null;
+      function cache() {
+        rect = el.getBoundingClientRect();
+        chars = Array.prototype.map.call(el.querySelectorAll('.ch'), function (c) {
+          var r = c.getBoundingClientRect();
+          return { el: c, x: r.left + r.width / 2, y: r.top + r.height / 2 };
+        });
+      }
+      function ripple(e) {
+        el.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+        el.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+        var s2 = 2 * 85 * 85;
+        chars.forEach(function (c) {
+          var dx = e.clientX - c.x, dy = (e.clientY - c.y) * 0.6;
+          var f = Math.exp(-(dx * dx + dy * dy) / s2);
+          if (f < 0.02) { c.el.style.transform = ''; return; }
+          c.el.style.transform =
+            'translateY(' + (-17 * f).toFixed(1) + 'px)' +
+            ' scale(' + (1 + 0.11 * f).toFixed(3) + ')' +
+            ' rotate(' + ((dx > 0 ? -1 : 1) * 3.5 * f).toFixed(2) + 'deg)';
+        });
+      }
+      el.addEventListener('pointerenter', cache);
+      el.addEventListener('pointermove', function (e) {
+        pending = e;
+        if (raf) return;
+        raf = requestAnimationFrame(function () {
+          raf = null;
+          if (chars && rect) ripple(pending);
+        });
+      });
+      el.addEventListener('pointerleave', function () {
+        if (chars) chars.forEach(function (c) { c.el.style.transform = ''; });
+      });
+    });
+  }
+
+  /* ---------- gold sparkles around gleaming text ---------- */
+  if (!reduceMotion) {
+    document.querySelectorAll('.gleam').forEach(function (el) {
+      var spots = [
+        { l: '-6%',  t: '-18%', d: 0   },
+        { l: '102%', t: '8%',   d: .9  },
+        { l: '48%',  t: '-30%', d: 1.7 }
+      ];
+      spots.forEach(function (p) {
+        var s = document.createElement('i');
+        s.className = 'sp';
+        s.textContent = '✦';
+        s.setAttribute('aria-hidden', 'true');
+        s.style.left = p.l; s.style.top = p.t;
+        s.style.animationDelay = p.d + 's';
+        el.appendChild(s);
+      });
+    });
+  }
+
+  /* ---------- CIRRUS: the little cloud that knows things ---------- */
+  var cbBtn = document.getElementById('cbBtn');
+  var cbPanel = document.getElementById('cbPanel');
+  var cbClose = document.getElementById('cbClose');
+  var cbFeed = document.getElementById('cbFeed');
+  var cbChips = document.getElementById('cbChips');
+  var cbForm = document.getElementById('cbForm');
+  var cbInput = document.getElementById('cbInput');
+  var cbGreeted = false;
+
+  var BRAIN = [
+    { k: /\b(book|schedule|appoint|consult|call me|talk to|meet|demo call)\b/i,
+      r: "Love it — the fastest way is the form just below. I'll take you there and pre-fill it for a call. A human (a real one!) replies within one business day. ☁️",
+      go: 'Book a call' },
+    { k: /\b(price|pricing|cost|how much|\$|fee|monthly|subscription)\b/i,
+      r: "Simple: the <b>website plan is $97/month, all-in</b> — design, hosting, domain, SSL, backups, and 5 update requests a month. <b>AI automation is custom-quoted</b> because it's built around your exact workflow. Want me to set up a call?" },
+    { k: /\b(receptionist|answer|phone|miss(ed)? call|voicemail|after hours|24\/?7)\b/i,
+      r: "Our <b>AI receptionist</b> answers every call — nights, weekends, holidays. It texts back missed calls in seconds, talks like your business, checks your real availability, and books the appointment straight onto your calendar. Scroll to the Demo section to watch it work!" },
+    { k: /\b(follow.?up|lead|nurture|speed to lead|chase|convert|respond)\b/i,
+      r: "<b>Automated follow-up</b> means every enquiry gets an instant, personal reply — then polite nudges until they book or say no. Businesses that reply within a minute convert dramatically more leads. That's the whole magic trick: speed." },
+    { k: /\b(crm|pipeline|hubspot|salesforce|jobber|housecall|data|sync|integrat)\b/i,
+      r: "We do <b>CRM pipeline optimization</b>: clean stages, automatic tagging, real-time syncing, and custom logic built around how you actually work — with the tools you already use. No rip-and-replace." },
+    { k: /\b(website|site|web design|hosting|domain|ssl|seo|maintain)\b/i,
+      r: "The <b>$97/month website plan</b> covers everything: professional design, hosting with 99.9% uptime, your custom domain, SSL, backups, monitoring, and 5 update requests a month. You never touch the tech — that's our whole thing." },
+    { k: /\b(who|about|beck|charlotte|where|local|company|you guys)\b/i,
+      r: "<b>Beck Systems</b> is an automation studio in <b>Charlotte, North Carolina</b> — AI receptionists, automation, and websites for local businesses. Direct support, no ticket queues. We handle the tech; you run the business." },
+    { k: /\b(hour|open|when|available|time|reach|contact|email|number)\b/i,
+      r: "You can reach us at <b>(704) 254-2341</b> or <b>BeckSystems@Gmail.com</b>. Humans answer Mon–Fri, 9–5 ET — the systems (and I) run 24/7. We're also @thebecksystems on X." },
+    { k: /\b(how (does|do)|work|setup|start|onboard|process|install|long)\b/i,
+      r: "It's painless: we hop on a short call, map where leads slip through, then build and connect everything to the tools you already use. Most setups are live within days — and you get direct support, not a ticket queue." },
+    { k: /\b(ai|automation|robot|chatbot|gpt|smart)\b/i,
+      r: "AI automation just means software that does the busywork a human used to: answering calls, replying to leads, updating the CRM, booking jobs. We build it custom for your business — nothing off the shelf. Ask me about the receptionist, follow-ups, or CRM sync!" },
+    { k: /\b(thank|thanks|awesome|great|cool|nice)\b/i,
+      r: "Aww, you're welcome! ☁️ Anything else you'd like to know — pricing, the AI receptionist, or booking a call?" },
+    { k: /\b(hi|hello|hey|howdy|yo)\b/i,
+      r: "Hello hello! I'm <b>Cirrus</b>, Beck Systems' resident cloud. Ask me about AI receptionists, automated follow-up, the $97/month website plan — or I can help you book a call." },
+    { k: /\b(human|person|real|someone)\b/i,
+      r: "Absolutely — the humans are the best part. Call <b>(704) 254-2341</b>, email <b>BeckSystems@Gmail.com</b>, or let me take you to the booking form.",
+      go: 'Book a call' },
+    { k: /\b(bye|goodbye|later|see ya)\b/i,
+      r: "Bye for now! I'll be floating right here if you need me. ☁️" }
+  ];
+  var FALLBACKS = [
+    "Hmm, that one drifted past me! I'm best at Beck Systems questions — pricing, the AI receptionist, follow-ups, CRM, or booking a call. Which sounds good?",
+    "I'm a small cloud with a focused brain ☁️ — try me on pricing, how the AI receptionist works, or say <b>book a call</b> and I'll set you up."
+  ];
+  var fbIdx = 0;
+
+  function cbMsg(html, who) {
+    var d = document.createElement('div');
+    d.className = 'cb-msg cb-msg--' + who;
+    d.innerHTML = html;
+    cbFeed.appendChild(d);
+    cbFeed.scrollTop = cbFeed.scrollHeight;
+    return d;
+  }
+  function cbSetChips(list) {
+    cbChips.innerHTML = '';
+    list.forEach(function (c) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'cb-chip'; b.textContent = c;
+      b.addEventListener('click', function () { handleUser(c); });
+      cbChips.appendChild(b);
+    });
+  }
+  function goToBooking() {
+    if (topicSelect) topicSelect.value = 'Book a call';
+    setChat(false);
+    document.getElementById('contact').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+  }
+  function botReply(text) {
+    var hit = null;
+    for (var i = 0; i < BRAIN.length; i++) {
+      if (BRAIN[i].k.test(text)) { hit = BRAIN[i]; break; }
+    }
+    var typing = cbMsg('<span class="typing"><i></i><i></i><i></i></span>', 'bot cb-msg--typing');
+    setTimeout(function () {
+      typing.remove();
+      if (hit) {
+        cbMsg(hit.r, 'bot');
+        if (hit.go === 'Book a call') setTimeout(goToBooking, 1600);
+        cbSetChips(hit.go ? [] : ['Book a call', 'Pricing', 'AI receptionist', 'How it works']);
+      } else {
+        cbMsg(FALLBACKS[fbIdx++ % FALLBACKS.length], 'bot');
+        cbSetChips(['Book a call', 'Pricing', 'AI receptionist', 'What is Beck Systems?']);
+      }
+    }, reduceMotion ? 50 : 750 + Math.random() * 500);
+  }
+  function handleUser(text) {
+    if (!text.trim()) return;
+    cbMsg(text.replace(/[<>&]/g, function (c) { return { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]; }), 'user');
+    cbSetChips([]);
+    botReply(text);
+  }
+  function setChat(open) {
+    cbPanel.classList.toggle('open', open);
+    cbPanel.setAttribute('aria-hidden', String(!open));
+    cbBtn.setAttribute('aria-expanded', String(open));
+    if (open && !cbGreeted) {
+      cbGreeted = true;
+      setTimeout(function () {
+        cbMsg("Hi! I'm <b>Cirrus</b> ☁️ — Beck Systems' little cloud. I can explain our AI receptionists, automated follow-up, the $97/month website plan… or get you booked for a call. What can I help with?", 'bot');
+        cbSetChips(['Book a call', 'Pricing', 'AI receptionist', 'How it works']);
+      }, 350);
+    }
+    if (open) cbInput.focus();
+  }
+  cbBtn.addEventListener('click', function () { setChat(!cbPanel.classList.contains('open')); });
+  cbClose.addEventListener('click', function () { setChat(false); });
+  cbForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var v = cbInput.value;
+    cbInput.value = '';
+    handleUser(v);
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && cbPanel.classList.contains('open')) setChat(false);
   });
 
   /* ---------- GSAP extras (optional polish) ---------- */
