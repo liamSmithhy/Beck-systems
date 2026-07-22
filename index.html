@@ -45,6 +45,8 @@
   --gold-soft:#C9B37E;
   --sage:#7C8DA5;
   --sage-soft:rgba(124,141,165,.16);
+  --uv:#8B7BD8;
+  --uv-soft:rgba(139,123,216,.14);
   --serif:'Cormorant Garamond','Playfair Display',Georgia,'Times New Roman',serif;
   --sans:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
   --ease-out:cubic-bezier(.22,1,.36,1);
@@ -107,7 +109,7 @@ body::after{
 /* ---------- scroll progress ---------- */
 .progress{
   position:fixed; top:0; left:0; right:0; height:2px; z-index:120;
-  background:linear-gradient(90deg,var(--gold),var(--gold-soft));
+  background:linear-gradient(90deg,var(--gold),var(--gold-soft) 70%,var(--uv));
   transform-origin:0 50%; transform:scaleX(0);
 }
 
@@ -173,9 +175,10 @@ body::after{
   font-size:12px; letter-spacing:.24em; text-transform:uppercase; font-weight:500;
   padding:17px 36px; border-radius:999px; white-space:nowrap;
   position:relative; overflow:hidden; isolation:isolate;
-  transition:color .45s var(--ease-inout), border-color .45s ease, transform .3s ease;
+  transition:color .45s var(--ease-inout), border-color .45s ease, transform .3s ease, box-shadow .5s ease;
 }
 .btn--solid{ background:var(--ink); color:var(--ivory); border:1px solid var(--ink); }
+.btn--solid:hover{ box-shadow:0 14px 34px -12px rgba(139,123,216,.42); }
 .btn--solid::before{
   content:""; position:absolute; inset:0; z-index:-1; background:var(--gold);
   transform:translateY(101%); transition:transform .5s var(--ease-inout);
@@ -247,9 +250,27 @@ body::after{
   background:
     radial-gradient(38% 42% at 18% 24%, rgba(201,179,126,.22), transparent 70%),
     radial-gradient(34% 38% at 82% 70%, rgba(124,141,165,.16), transparent 70%),
+    radial-gradient(26% 30% at 44% 82%, rgba(139,123,216,.10), transparent 70%),
     radial-gradient(30% 34% at 68% 18%, rgba(169,138,68,.13), transparent 70%);
   animation:wash 24s ease-in-out infinite alternate;
   will-change:transform;
+}
+
+/* slow-turning aurora ribbon behind the headline — gold into ultraviolet */
+.hero__aurora{
+  position:absolute; left:-12%; top:-14%; width:min(46vw,620px); height:min(46vw,620px);
+  z-index:0; pointer-events:none; opacity:.4; border-radius:50%;
+  background:
+    radial-gradient(42% 42% at 30% 28%, rgba(201,179,126,.20), transparent 70%),
+    radial-gradient(40% 40% at 72% 40%, rgba(139,123,216,.14), transparent 70%),
+    radial-gradient(44% 44% at 48% 76%, rgba(124,141,165,.15), transparent 70%),
+    radial-gradient(34% 34% at 26% 62%, rgba(169,138,68,.15), transparent 70%);
+  animation:aurora 30s linear infinite;
+}
+@keyframes aurora{
+  0%{ transform:rotate(0deg) scale(1); }
+  50%{ transform:rotate(180deg) scale(1.06); }
+  100%{ transform:rotate(360deg) scale(1); }
 }
 @keyframes wash{
   0%{ transform:translate3d(0,0,0); }
@@ -318,14 +339,14 @@ body::after{
   background:var(--paper); padding:20px 0; overflow:hidden;
 }
 .marquee__track{ display:flex; width:max-content; animation:marquee 30s linear infinite; will-change:transform; transform:translateZ(0); }
-.marquee:hover .marquee__track{ animation-play-state:paused; }
 @keyframes marquee{ to{ transform:translateX(-50%); } }
 .marquee__set{
   display:flex; align-items:center; flex-shrink:0;
   font-size:12px; letter-spacing:.26em; text-transform:uppercase; color:rgba(22,21,17,.62);
 }
 .marquee__set span{ padding:0 28px; white-space:nowrap; }
-.marquee__set i{ color:var(--gold); font-style:normal; }
+.marquee__set i{ color:var(--gold); font-style:normal; display:inline-block; animation:starspin 8s linear infinite; }
+@keyframes starspin{ to{ transform:rotate(360deg); } }
 
 /* ============ REVEALS ============ */
 .js .reveal{ opacity:0; transform:translateY(44px); transition:opacity 1s var(--ease-out), transform 1s var(--ease-out); }
@@ -426,7 +447,18 @@ body::after{
 .demo__replay:hover svg{ transform:rotate(-360deg); }
 
 /* phone mock */
-.phone-wrap{ display:flex; justify-content:center; perspective:1100px; }
+.phone-wrap{ display:flex; justify-content:center; perspective:1100px; position:relative; }
+.phone-aura{
+  position:absolute; top:4%; left:-2%; width:104%; height:92%;
+  z-index:0; pointer-events:none;
+  opacity:.38; border-radius:50%;
+  background:
+    radial-gradient(46% 46% at 32% 34%, rgba(139,123,216,.17), transparent 70%),
+    radial-gradient(42% 42% at 70% 48%, rgba(201,179,126,.16), transparent 70%),
+    radial-gradient(44% 44% at 46% 72%, rgba(124,141,165,.13), transparent 70%);
+  animation:aurora 34s linear infinite reverse;
+}
+.phone{ position:relative; z-index:1; }
 .phone{
   width:min(370px,88vw); border-radius:34px; background:var(--paper);
   will-change:transform;
@@ -450,7 +482,12 @@ body::after{
 .phone__dot{ width:6px; height:6px; border-radius:50%; background:var(--sage); animation:pulse 2s ease-in-out infinite; }
 @keyframes pulse{ 0%,100%{ opacity:1; transform:scale(1);} 50%{ opacity:.4; transform:scale(.8);} }
 
-.phone__feed{ padding:20px 18px 24px; display:flex; flex-direction:column; gap:12px; min-height:430px; }
+/* fixed height: the conversation grows INSIDE and auto-scrolls;
+   the phone (and the page around it) never changes size */
+.phone__feed{
+  padding:20px 18px 24px; display:flex; flex-direction:column; gap:12px;
+  height:470px; overflow-y:auto; scroll-behavior:smooth; overscroll-behavior:contain;
+}
 
 .chip{
   align-self:center; font-size:10.5px; letter-spacing:.18em; text-transform:uppercase;
@@ -525,8 +562,15 @@ body::after{
 .plan__flag{
   position:absolute; top:-14px; right:34px; background:var(--gold); color:var(--ivory);
   font-size:10px; letter-spacing:.26em; text-transform:uppercase; font-weight:500;
-  padding:8px 18px; border-radius:999px;
+  padding:8px 18px; border-radius:999px; overflow:hidden; isolation:isolate;
 }
+.plan__flag::after{
+  content:""; position:absolute; top:0; bottom:0; width:45%; left:-60%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.5),transparent);
+  transform:skewX(-20deg);
+  animation:flagshine 5s ease-in-out infinite;
+}
+@keyframes flagshine{ 0%,72%{ left:-60% } 88%,100%{ left:130% } }
 .plan__cat{ font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--smoke); }
 .plan--dark .plan__cat{ color:rgba(245,243,236,.5); }
 .plan h3{
@@ -586,7 +630,10 @@ body::after{
   padding:14px 0 12px; border-radius:0;
   transition:border-color .35s ease;
 }
-.field:focus{ border-color:var(--gold); }
+.field:focus{
+  border-color:var(--gold);
+  box-shadow:0 12px 26px -14px rgba(139,123,216,.4);
+}
 .field::placeholder{ color:#A6A49A; }
 textarea.field{ resize:none; min-height:110px; }
 select.field{
@@ -654,23 +701,27 @@ select.field{
 /* ============ GOLD GLEAM + SPARKLES ============ */
 .gleam{ color:var(--gold); position:relative; padding:.25em .15em; margin:-.25em -.15em; }
 @supports ((-webkit-background-clip:text) or (background-clip:text)){
+  /* gradient holds two identical periods; shifting one container-width
+     per loop lands on an identical frame — endless, no cut */
   .gleam{
     background:linear-gradient(100deg,
-      var(--gold) 0%, #E9DCAE 22%, var(--gold) 45%, #D8C07C 68%, var(--gold) 100%);
-    background-size:220% 100%;
+      var(--gold) 0%, #E9DCAE 12.5%, var(--gold) 25%, #D8C07C 37.5%, var(--gold) 50%,
+      #E9DCAE 62.5%, var(--gold) 75%, #D8C07C 87.5%, var(--gold) 100%);
+    background-size:200% 100%;
     -webkit-background-clip:text; background-clip:text;
     -webkit-text-fill-color:transparent;
-    animation:gleam 5.5s linear infinite;
-    filter:drop-shadow(0 0 11px rgba(169,138,68,.32));
+    animation:gleam 6s linear infinite;
+    filter:drop-shadow(0 0 11px rgba(169,138,68,.32)) drop-shadow(0 0 24px rgba(139,123,216,.16));
   }
 }
-@keyframes gleam{ to{ background-position:-220% 0; } }
+@keyframes gleam{ from{ background-position:0% 0; } to{ background-position:100% 0; } }
 .sp{
   position:absolute; font-style:normal; color:var(--gold-soft); pointer-events:none;
   font-size:.32em; line-height:1; opacity:0; z-index:1;
   animation:twinkle 2.8s ease-in-out infinite;
   -webkit-text-fill-color:var(--gold-soft); filter:none;
 }
+.sp:nth-of-type(3){ color:#B9A7F5; -webkit-text-fill-color:#B9A7F5; }
 @keyframes twinkle{
   0%,100%{ opacity:0; transform:scale(.35) rotate(0deg); }
   50%{ opacity:.95; transform:scale(1) rotate(100deg); }
@@ -683,7 +734,10 @@ select.field{
   filter:drop-shadow(0 10px 22px rgba(22,21,17,.22));
   transition:transform .35s var(--ease-out);
 }
-.cb-btn:hover{ transform:scale(1.08) rotate(-3deg); }
+.cb-btn:hover{
+  transform:scale(1.08) rotate(-3deg);
+  filter:drop-shadow(0 10px 22px rgba(22,21,17,.22)) drop-shadow(0 0 26px rgba(139,123,216,.5));
+}
 @keyframes cbfloat{ 0%,100%{ transform:translateY(0) } 50%{ transform:translateY(-7px) } }
 .cb-btn > svg{ width:100%; height:100%; overflow:visible; animation:cbfloat 5s ease-in-out infinite; }
 .cb-btn .cb-eye{ animation:blink 4.6s infinite; transform-origin:center; }
@@ -757,7 +811,7 @@ select.field{
   display:flex; align-items:center; justify-content:center; flex-shrink:0;
   transition:background .35s, transform .3s var(--ease-out);
 }
-.cb-send:hover{ background:var(--gold); transform:scale(1.08); }
+.cb-send:hover{ background:var(--gold); transform:scale(1.08); box-shadow:0 6px 20px -6px rgba(139,123,216,.55); }
 
 @media(max-width:560px){
   .cb-btn{ right:14px; bottom:14px; width:66px; height:52px; }
@@ -836,6 +890,7 @@ select.field{
 <!-- ================= HERO ================= -->
 <section class="hero" id="hero">
   <div class="hero__wash" aria-hidden="true"><i></i></div>
+  <div class="hero__aurora" aria-hidden="true"></div>
   <div class="orb orb--a" data-orb></div>
   <div class="orb orb--b" data-orb></div>
 
@@ -985,6 +1040,7 @@ select.field{
     </div>
 
     <div class="phone-wrap reveal-r" data-delay="1">
+      <div class="phone-aura" aria-hidden="true"></div>
       <div class="phone" id="phone" data-tilt>
         <div class="phone__bar">
           <div class="phone__avatar">B</div>
@@ -1346,6 +1402,17 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   /* no IO or reduced motion: final values are already in the HTML — nothing to do */
 
+  /* ---------- pause decorative animations while off-screen ---------- */
+  if ('IntersectionObserver' in window) {
+    var decor = document.querySelectorAll('.hero__aurora, .phone-aura, .orb, .hero__wash i, .hero__rings svg');
+    var dio = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        en.target.style.animationPlayState = en.isIntersecting ? 'running' : 'paused';
+      });
+    }, { rootMargin: '100px' });
+    decor.forEach(function (el) { dio.observe(el); });
+  }
+
   /* ---------- ultra-smooth inertial scrolling (Lenis, optional) ---------- */
   var lenis = null;
   if (typeof Lenis !== 'undefined' && !reduceMotion) {
@@ -1421,11 +1488,15 @@ document.addEventListener('DOMContentLoaded', function () {
   var feed = document.getElementById('demoFeed');
   var demoTimers = [];
   function clearDemo() { demoTimers.forEach(clearTimeout); demoTimers = []; }
+  function feedScroll() {
+    feed.scrollTop = feed.scrollHeight;
+  }
   function playDemo() {
     clearDemo();
     feed.classList.add('demo-anim');
     var steps = feed.querySelectorAll('[data-step]');
     steps.forEach(function (s) { s.classList.remove('on', 'typed', 'typing-on'); });
+    feed.scrollTop = 0;
     var t = 300;
     steps.forEach(function (step) {
       t += parseInt(step.dataset.wait || '900', 10);
@@ -1433,11 +1504,13 @@ document.addEventListener('DOMContentLoaded', function () {
       (function (st, when, typing) {
         demoTimers.push(setTimeout(function () {
           st.classList.add('on');
+          feedScroll();
           if (typing) {
             st.classList.add('typing-on');
             demoTimers.push(setTimeout(function () {
               st.classList.remove('typing-on');
               st.classList.add('typed');
+              feedScroll();
             }, typing));
           } else {
             st.classList.add('typed');
