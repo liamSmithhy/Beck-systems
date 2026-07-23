@@ -1,0 +1,17 @@
+{
+  "name": "Beck Systems",
+  "short_name": "Beck Systems",
+  "description": "AI receptionists, automation, and websites for local businesses in Charlotte and beyond.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F3F0E7",
+  "theme_color": "#F3F0E7",
+  "icons": [
+    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
