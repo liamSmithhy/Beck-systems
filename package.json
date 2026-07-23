@@ -1,0 +1,10 @@
+{
+  "name": "beck-systems",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Beck Systems marketing site + client & project management portal.",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "stripe": "^17.2.0"
+  }
+}

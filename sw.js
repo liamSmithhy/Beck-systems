@@ -1,6 +1,6 @@
 /* Beck Systems service worker — network-first with offline fallback.
    Updates always win when online; the cached copy serves offline. */
-var CACHE = 'beck-systems-v1';
+var CACHE = 'beck-systems-v2';
 var PRECACHE = [
   '/',
   '/manifest.webmanifest',
@@ -27,6 +27,9 @@ self.addEventListener('activate', function (e) {
 
 self.addEventListener('fetch', function (e) {
   if (e.request.method !== 'GET') return;
+  // Never intercept the portal API or portal pages — always go straight to network.
+  var path = new URL(e.request.url).pathname;
+  if (path.indexOf('/api/') === 0 || path.indexOf('/portal') === 0) return;
   e.respondWith(
     fetch(e.request).then(function (res) {
       if (res.ok && new URL(e.request.url).origin === self.location.origin) {
